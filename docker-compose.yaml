@@ -1,15 +1,14 @@
-version: '3'
+version: '3.6'
 services:
   azure-iot-edge-runtime:
     image: 'azure-test'
-    network_mode: host
-    privileged: true
-    volumes:
-    - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    - /var/run/docker.sock:/docker/docker.sock
+    network_mode: 'host'
+    volumes: 
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     environment:
       - TENANT_URL=http://francisco
       - TENANT_PASSWORD=WhqGIk2cj1OQ_iiqQzdabRtpGw9R_iKcfc
       - TENANT_ID=28b7f823-544a-473e-a6e8-086494d565b0
       - AZURE_IOT_HUB_NAME=NuvlaBox-Test
-
+    privileged: true

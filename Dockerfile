@@ -1,6 +1,35 @@
-FROM toolboc/azure-iot-edge-device-container
+FROM ubuntu:18.04
 
-ADD config.yaml /etc/iotedge/
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    wget \
+    gnupg \
+    lsb-release \
+    jq \
+    net-tools \
+    iptables \
+    iproute2 \
+    systemd
+
+RUN AZ_REPO=$(lsb_release -cs) && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
+    tee /etc/apt/sources.list.d/azure-cli.list && \
+    curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > ./microsoft-prod.list && \
+    cp ./microsoft-prod.list /etc/apt/sources.list.d/ && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    cp ./microsoft.gpg /etc/apt/trusted.gpg.d/ 
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    azure-cli \
+    moby-cli \
+    moby-engine && \ 
+    apt-get install -y --no-install-recommends iotedge=1.0.0-1   
+
+RUN az extension add --name azureiot
 
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh

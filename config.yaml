@@ -1,5 +1,4 @@
 
-
 # Manual provisioning configuration
 provisioning:
   source: "manual"
