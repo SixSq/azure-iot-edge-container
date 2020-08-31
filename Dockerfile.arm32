@@ -1,6 +1,6 @@
 FROM arm32v7/ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update -qq && apt-get install -qqy \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -9,9 +9,15 @@ RUN apt-get update && apt-get install -y \
     lsb-release \
     jq \
     net-tools \
-    iptables \
     iproute2 \
-    systemd
+    systemd \
+    build-essential \
+    python \
+    python-dev \
+    libffi-dev \
+    libssl1.0.0 \
+    libssl-dev \
+    iptables
 
 # RUN AZ_REPO=$(lsb_release -cs) && \
 #     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
