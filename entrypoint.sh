@@ -1,24 +1,89 @@
-# Step 1: Check Env Vars
+#!/bin/bash
 
-
-function conn_string {
-    sed -i 's/"CONNECTION_STRING_REPLACE_ME"/"'"$1"'"/g' config.yaml
+tenantLogin(){
+    az login --service-principal -u $TENANT_URL -p $TENANT_PASSWORD --tenant $TENANT_ID
 }
 
-if [-z "$CONNECTION_STRING"]
-then
-    conn_string $CONNECTION_STRING
-elif [-z "$AZURE_USERNAME"] && [-z "$AZURE_PASSWORD"] && [-z "$AZURE_IOT_HUB_NAME"]
-then
+userLogin() {
     az login -u $AZURE_USERNAME -p $AZURE_PASSWORD
-    CONN_STRING = $(az iot hub device-identity create --device-id $DEVICE_ID --hub-name $AZURE_IOT_HUB_NAME --edge-enabled)
-    conn_string $CONN_STRING
-else
-    echo 'Error: Environmental Variables not set.'
+}
+
+creation(){
+
+    echo "--- REGISTER IOT DEVICE ---"
+
+    NAME='nuvla-'$(hostname)
+
+    az iot hub device-identity create --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME --edge-enabled
+    CONNECTION_STRING=$(az iot hub device-identity show-connection-string --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME | jq -r '.connectionString')
+    az iot hub device-twin update --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME
+}
+
+edgeRuntime(){
+
+echo "--- STARTING IOT EDGE RUNTIME ---"
+
+IP=$(ifconfig eth0 | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+
+echo export IOTEDGE_HOST=http://$IP:15580 >> ~/.bashrc
+
+cat <<EOF > /etc/iotedge/config.yaml
+provisioning:
+  source: "manual"
+  device_connection_string: "$CONNECTION_STRING"
+agent:
+  name: "edgeAgent"
+  type: "docker"
+  env: {}
+  config:
+    image: "mcr.microsoft.com/azureiotedge-agent:1.0"
+    auth: {}
+hostname: "8c7fe9bb72d3"
+connect:
+  management_uri: "http://$IP:15580"
+  workload_uri: "http://$IP:15581"
+listen:
+  management_uri: "http://$IP:15580"
+  workload_uri: "http://$IP:15581"
+homedir: "/var/lib/iotedge"
+moby_runtime:
+  docker_uri: "/var/run/docker.sock"
+EOF
+
+cat /etc/iotedge/config.yaml
+
+iotedged -c /etc/iotedge/config.yaml 
+
+}   
+
+if [ -f /var/run/docker.pid ]; then
+    echo "Stale docker.pid found in /var/run/docker.pid, removing..."
+    rm /var/run/docker.pid
 fi
 
-# Chown docker.sock
-chown root:docker /docker/docker.sock
+while (! docker stats --no-stream ); do
+  # Docker takes a few seconds to initialize
+  dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
+  echo "Waiting for Docker to launch..."
+  sleep 1
+done
 
-# Restart IoTEdge
-sudo systemctl restart iotedge 
+if [ -z "$CONNECTION_STRING" ]; 
+then
+    echo "NO CONNECTION STRING PROVIDED. STARTING DEVICE CREATION"
+
+    if [ -n "$AZURE_USERNAME" ] && [ -n "$AZURE_PASSWORD" ] && [ -n "$AZURE_IOT_HUB_NAME" ]
+    then
+        userLogin
+    elif [ -n "$TENANT_URL" ] && [ -n "$TENANT_PASSWORD" ] && [ -n "$TENANT_ID" ] 
+    then
+        tenantLogin
+    else
+        echo "NO CREDENTIALS AVAILABLE. EXITING."
+        exit
+    fi
+    creation
+
+fi 
+
+edgeRuntime
