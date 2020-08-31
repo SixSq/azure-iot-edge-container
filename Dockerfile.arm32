@@ -18,32 +18,32 @@ RUN AZ_REPO=$(lsb_release -cs) && \
     tee /etc/apt/sources.list.d/azure-cli.list && \
     curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 
-RUN curl -L https://aka.ms/moby-engine-armhf-latest -o moby_engine.deb && dpkg -i ./moby_engine.deb && rm ./moby_engine.deb && \
-    curl -L https://aka.ms/moby-cli-armhf-latest -o moby_cli.deb && dpkg -i ./moby_cli.deb && rm ./moby_cli.deb
+# RUN curl -L https://aka.ms/moby-engine-armhf-latest -o moby_engine.deb && dpkg -i ./moby_engine.deb && rm ./moby_engine.deb && \
+#     curl -L https://aka.ms/moby-cli-armhf-latest -o moby_cli.deb && dpkg -i ./moby_cli.deb && rm ./moby_cli.deb
 
-RUN curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/libiothsm-std_1.0.0-1_armhf.deb -o libiothsm-std.deb && dpkg -i ./libiothsm-std.deb && rm ./libiothsm-std.deb && \
-    curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/iotedge_1.0.0-1_armhf.deb -o iotedge.deb && dpkg -i ./iotedge.deb && rm ./iotedge.deb
+# RUN curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/libiothsm-std_1.0.0-1_armhf.deb -o libiothsm-std.deb && dpkg -i ./libiothsm-std.deb && rm ./libiothsm-std.deb && \
+#     curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/iotedge_1.0.0-1_armhf.deb -o iotedge.deb && dpkg -i ./iotedge.deb && rm ./iotedge.deb
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    azure-cli \
-    moby-cli \
-    moby-engine && \ 
-    apt-get install -y --no-install-recommends iotedge=1.0.0-1   
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     azure-cli \
+#     moby-cli \
+#     moby-engine && \ 
+#     apt-get install -y --no-install-recommends iotedge=1.0.0-1   
 
-RUN az extension add --name azure-iot
+# RUN az extension add --name azure-iot
 
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# COPY entrypoint.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/entrypoint.sh
 
-VOLUME /var/lib/docker
+# VOLUME /var/lib/docker
 
-EXPOSE 2375
-EXPOSE 15580
-EXPOSE 15581
+# EXPOSE 2375
+# EXPOSE 15580
+# EXPOSE 15581
 
-ENTRYPOINT ["bash", "entrypoint.sh"]
+# ENTRYPOINT ["bash", "entrypoint.sh"]
 
-CMD []
+# CMD []
 
 # RUN wget https://azurecliprod.blob.core.windows.net/install.py -O azure-cli-install.py && \
 #     chmod +x azure-cli-install.py && \
