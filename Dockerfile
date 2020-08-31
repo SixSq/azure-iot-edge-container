@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     moby-engine && \ 
     apt-get install -y --no-install-recommends iotedge=1.0.0-1   
 
-RUN az extension add --name azureiot
+RUN az extension add --name azure-iot
 
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
