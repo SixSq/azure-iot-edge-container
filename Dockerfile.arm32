@@ -13,7 +13,9 @@ RUN apt-get update -qq && apt-get install -qqy \
     systemd \
     build-essential \
     python \
+    python3 \
     python-dev \
+    python3-dev \
     libffi-dev \
     libssl1.0.0 \
     libssl-dev \
@@ -24,16 +26,21 @@ RUN apt-get update -qq && apt-get install -qqy \
 #     tee /etc/apt/sources.list.d/azure-cli.list && \
 #     curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 
-# RUN curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
-# RUN cp ./microsoft-prod.list /etc/apt/sources.list.d/
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-# RUN cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
+RUN curl -L https://aka.ms/InstallAzureCli >> installAzureCli.sh
+RUN curl https://azurecliprod.blob.core.windows.net/install.py >> installAzureCliPython.py
+RUN chmod +x installAzureCliPython.py
+RUN /usr/lib/azure-cli y /usr/bin | python3 installAzureCliPython.py
 
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     azure-cli \
-#     moby-cli \
-#     moby-engine && \ 
-#     apt-get install -y --no-install-recommends iotedge=1.0.0-1   
+
+RUN curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
+RUN cp ./microsoft-prod.list /etc/apt/sources.list.d/
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+RUN cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    moby-cli \
+    moby-engine && \ 
+    apt-get install -y --no-install-recommends iotedge=1.0.0-1   
 
 # RUN az extension add --name azure-iot
 
@@ -50,18 +57,18 @@ RUN apt-get update -qq && apt-get install -qqy \
 
 # CMD []
 
-RUN wget https://azurecliprod.blob.core.windows.net/install.py -O azure-cli-install.py && \
-    chmod +x azure-cli-install.py && \
-    yes "" | ./azure-cli-install.py
+# RUN wget https://azurecliprod.blob.core.windows.net/install.py -O azure-cli-install.py && \
+#     chmod +x azure-cli-install.py && \
+#     yes "" | ./azure-cli-install.py
 
-RUN cp /root/bin/az /usr/local/bin && \
-    az extension add --name azure-cli-iot-ext
+# RUN cp /root/bin/az /usr/local/bin && \
+#     az extension add --name azure-cli-iot-ext
 
-RUN curl -L https://aka.ms/moby-engine-armhf-latest -o moby_engine.deb && dpkg -i ./moby_engine.deb && rm ./moby_engine.deb && \
-    curl -L https://aka.ms/moby-cli-armhf-latest -o moby_cli.deb && dpkg -i ./moby_cli.deb && rm ./moby_cli.deb
+# RUN curl -L https://aka.ms/moby-engine-armhf-latest -o moby_engine.deb && dpkg -i ./moby_engine.deb && rm ./moby_engine.deb && \
+#     curl -L https://aka.ms/moby-cli-armhf-latest -o moby_cli.deb && dpkg -i ./moby_cli.deb && rm ./moby_cli.deb
 
-RUN curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/libiothsm-std_1.0.0-1_armhf.deb -o libiothsm-std.deb && dpkg -i ./libiothsm-std.deb && rm ./libiothsm-std.deb && \
-    curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/iotedge_1.0.0-1_armhf.deb -o iotedge.deb && dpkg -i ./iotedge.deb && rm ./iotedge.deb
+# RUN curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/libiothsm-std_1.0.0-1_armhf.deb -o libiothsm-std.deb && dpkg -i ./libiothsm-std.deb && rm ./libiothsm-std.deb && \
+#     curl -L https://github.com/Azure/azure-iotedge/releases/download/1.0.0/iotedge_1.0.0-1_armhf.deb -o iotedge.deb && dpkg -i ./iotedge.deb && rm ./iotedge.deb
 
 # COPY entrypoint.sh /usr/local/bin/
 # RUN chmod +x /usr/local/bin/entrypoint.sh
