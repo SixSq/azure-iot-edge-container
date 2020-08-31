@@ -29,7 +29,7 @@ RUN apt-get update -qq && apt-get install -qqy \
 RUN curl -L https://aka.ms/InstallAzureCli >> installAzureCli.sh
 RUN curl https://azurecliprod.blob.core.windows.net/install.py >> installAzureCliPython.py
 RUN chmod +x installAzureCliPython.py
-RUN /usr/lib/azure-cli y /usr/bin | python3 installAzureCliPython.py
+RUN /usr/lib/azure-cli y /usr/bin | ./installAzureCliPython.py
 
 
 RUN curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
