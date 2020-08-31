@@ -21,4 +21,3 @@ listen:
 homedir: "/var/lib/iotedge"
 moby_runtime:
   uri: "unix:///docker/docker.sock"
-  network: 'azure-iot-edge'

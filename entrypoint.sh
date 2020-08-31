@@ -15,7 +15,9 @@ creation(){
     NAME='nuvla-'$(hostname)
 
     az iot hub device-identity create --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME --edge-enabled
+
     CONNECTION_STRING=$(az iot hub device-identity show-connection-string --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME | jq -r '.connectionString')
+    
     az iot hub device-twin update --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME
 }
 
@@ -40,14 +42,14 @@ agent:
     auth: {}
 hostname: "8c7fe9bb72d3"
 connect:
-  management_uri: "http://$IP:15580"
-  workload_uri: "http://$IP:15581"
+  management_uri: "unix:///var/run/iotedge/mgmt.sock"
+  workload_uri: "unix:///var/run/iotedge/workload.sock"
 listen:
-  management_uri: "http://$IP:15580"
-  workload_uri: "http://$IP:15581"
+  management_uri: "fd://iotedge.mgmt.socket"
+  workload_uri: "fd://iotedge.socket"
 homedir: "/var/lib/iotedge"
 moby_runtime:
-  docker_uri: "/var/run/docker.sock"
+  uri: "unix:///docker/docker.sock"
 EOF
 
 cat /etc/iotedge/config.yaml
@@ -56,17 +58,6 @@ iotedged -c /etc/iotedge/config.yaml
 
 }   
 
-if [ -f /var/run/docker.pid ]; then
-    echo "Stale docker.pid found in /var/run/docker.pid, removing..."
-    rm /var/run/docker.pid
-fi
-
-while (! docker stats --no-stream ); do
-  # Docker takes a few seconds to initialize
-  dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
-  echo "Waiting for Docker to launch..."
-  sleep 1
-done
 
 if [ -z "$CONNECTION_STRING" ]; 
 then
