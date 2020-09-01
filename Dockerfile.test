@@ -16,17 +16,18 @@ RUN apt update && apt install -y moby-engine && \
 
 RUN az extension add --name azure-iot
 
-# ADD config.yaml /etc/iotedge/
+ADD config.yaml /etc/iotedge/
 
-# COPY entrypoint.sh /usr/local/bin/
-# RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# VOLUME /var/lib/docker
+VOLUME /var/lib/docker
 
-# EXPOSE 2375
-# EXPOSE 15580
-# EXPOSE 15581
+EXPOSE 2375
+EXPOSE 15580
+EXPOSE 15581
 
-# ENTRYPOINT ["bash", "entrypoint.sh"]
+ENTRYPOINT ["bash", "entrypoint.sh"]
 
-# CMD []
+CMD []
+    
