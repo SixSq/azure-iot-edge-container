@@ -2,7 +2,7 @@
 # Manual provisioning configuration
 provisioning:
   source: "manual"
-  device_connection_string: "CONNECTION_STRING_REPLACE_ME"
+  device_connection_string: "HostName=NuvlaBox-Test.azure-devices.net;DeviceId=cmd-test;SharedAccessKey=kmlzt9PwY9RKCbNgHsUS7e9/VUQ/cpue17KnltyKLiU="
 agent:
   name: "edgeAgent"
   type: "docker"

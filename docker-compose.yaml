@@ -4,7 +4,7 @@ services:
     image: 'azure-test'
     network_mode: 'host'
     volumes: 
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/var/run/docker.sock:/docker/docker.sock'
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     environment:
       - TENANT_URL=http://francisco

@@ -40,7 +40,7 @@ agent:
   config:
     image: "mcr.microsoft.com/azureiotedge-agent:1.0"
     auth: {}
-hostname: "8c7fe9bb72d3"
+hostname: "$(hostname)"
 connect:
   management_uri: "unix:///var/run/iotedge/mgmt.sock"
   workload_uri: "unix:///var/run/iotedge/workload.sock"
@@ -54,7 +54,7 @@ EOF
 
 cat /etc/iotedge/config.yaml
 
-iotedged -c /etc/iotedge/config.yaml 
+service iotedge start 
 
 }   
 
