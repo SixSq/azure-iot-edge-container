@@ -2,10 +2,7 @@ from toolboc/azure-iot-edge-device-container
 
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-
-CMD ['bash']
-
+COPY config.yaml /etc/iotedge/
 
 #
 # From Ubuntu
