@@ -1,45 +1,20 @@
-FROM ubuntu:18.04
+FROM jrei/systemd-ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    wget \
-    gnupg \
-    lsb-release \
-    jq \
-    net-tools \
-    iptables \
-    iproute2 \
-    systemd
+RUN apt update && apt install -y curl lsb-release gnupg jq net-tools
 
-RUN AZ_REPO=$(lsb_release -cs) && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
-    tee /etc/apt/sources.list.d/azure-cli.list && \
-    curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > /etc/apt/sources.list.d/microsoft-prod.list
 
-RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > ./microsoft-prod.list && \
-    cp ./microsoft-prod.list /etc/apt/sources.list.d/ && \
-    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
-    cp ./microsoft.gpg /etc/apt/trusted.gpg.d/ 
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    azure-cli \
-    moby-cli \
-    moby-engine && \ 
-    apt-get install -y --no-install-recommends iotedge=1.0.0-1   
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
+          tee /etc/apt/sources.list.d/azure-cli.list
+
+RUN apt update && apt install -y moby-engine && \
+      apt install -y iotedge azure-cli && \
+      systemctl enable iotedge && \
+      apt autoclean && rm -rf /var/lib/apt/lists/*
 
 RUN az extension add --name azure-iot
 
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 VOLUME /var/lib/docker
 
-EXPOSE 2375
-EXPOSE 15580
-EXPOSE 15581
-
-ENTRYPOINT ["bash", "entrypoint.sh"]
-
-CMD []
