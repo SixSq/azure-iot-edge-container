@@ -17,4 +17,3 @@ RUN apt update && apt install -y moby-engine && \
 RUN az extension add --name azure-iot
 
 VOLUME /var/lib/docker
-
