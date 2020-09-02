@@ -116,7 +116,8 @@ docker-compose up
 Several problems occured when developing this project:
 
 - Azure CLI executables not build for ARM64 devices (no RPi 4)
-- Need to use Systemd to restart IoTEdge in order to use Docker and IoT Edge sockets
+- Need to use Systemd to run IoTEdge in order to use Docker and IoT Edge sockets
+- Container has to start with Systemd
 - Need to use a second container to restart the IoTEdge service
 - Azure containers are isolated (Docker in Docker)
 - No logs from IoTEdge - due to systemd start.
