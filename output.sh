@@ -1,0 +1,1 @@
+iotedge logs edgeAgent | echo

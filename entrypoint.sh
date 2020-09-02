@@ -32,6 +32,8 @@ docker exec azure-iot-edge sed -i 's/"<ADD DEVICE CONNECTION STRING HERE>"/"'"$C
 docker exec azure-iot-edge cat /etc/iotedge/config.yaml
 docker exec azure-iot-edge systemctl restart iotedge
 
+# watch -n 1 docker exec azure-iot-edge systemctl status iotedge 
+
 }   
 
 
