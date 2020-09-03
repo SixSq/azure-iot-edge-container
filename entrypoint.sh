@@ -18,7 +18,6 @@ creation(){
 
     CONNECTION_STRING=$(docker exec azure-iot-edge az iot hub device-identity show-connection-string --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME | jq -r '.connectionString')
     
-    echo "CONNECTION STRING"
     echo $CONNECTION_STRING
 
     docker exec azure-iot-edge az iot hub device-twin update --device-id $NAME --hub-name $AZURE_IOT_HUB_NAME
@@ -31,8 +30,6 @@ echo "--- STARTING IOT EDGE RUNTIME ---"
 docker exec azure-iot-edge sed -i 's/"<ADD DEVICE CONNECTION STRING HERE>"/"'"$CONNECTION_STRING"'"/' /etc/iotedge/config.yaml
 docker exec azure-iot-edge cat /etc/iotedge/config.yaml
 docker exec azure-iot-edge systemctl restart iotedge
-
-# watch -n 1 docker exec azure-iot-edge systemctl status iotedge 
 
 }   
 
