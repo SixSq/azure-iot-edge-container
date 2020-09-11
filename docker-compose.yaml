@@ -17,7 +17,7 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
     environment:
-      - TENANT_URL=http://francisco
-      - TENANT_PASSWORD=WhqGIk2cj1OQ_iiqQzdabRtpGw9R_iKcfc
-      - TENANT_ID=28b7f823-544a-473e-a6e8-086494d565b0
-      - AZURE_IOT_HUB_NAME=NuvlaBox-Test
+      - TENANT_URL=
+      - TENANT_PASSWORD=
+      - TENANT_ID=
+      - AZURE_IOT_HUB_NAME=
