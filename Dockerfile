@@ -16,4 +16,14 @@ RUN apt update && apt install -y moby-engine && \
 
 RUN az extension add --name azure-iot
 
+COPY entrypoint.sh /opt/azure/
+
+COPY entrypointEnvs /opt/azure/ 
+
+RUN chmod +x /opt/azure/entrypoint.sh
+
+COPY entrypoint.service /lib/systemd/system/
+
+RUN systemctl enable entrypoint
+
 VOLUME /var/lib/docker
