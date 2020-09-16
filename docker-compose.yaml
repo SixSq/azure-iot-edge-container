@@ -1,6 +1,6 @@
 version: '3.6'
-services:
 
+services:
   azure-iot-edge:
     image: 'azure_runtime'
     container_name: 'azure-iot-edge'
@@ -8,8 +8,10 @@ services:
     privileged: true
     volumes: 
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-    environment:
-      - TENANT_URL=
-      - TENANT_PASSWORD=
-      - TENANT_ID=
-      - AZURE_IOT_HUB_NAME=
+    configs:
+      source: service_file
+      target: '/opt/azure/'
+
+configs:
+  service_file: 
+    file: './entrypointEnvs'
