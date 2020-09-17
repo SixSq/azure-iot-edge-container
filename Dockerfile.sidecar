@@ -1,0 +1,9 @@
+FROM docker
+
+RUN apk add bash jq
+
+COPY entrypoint.sh /
+
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["bash", "entrypoint.sh"]
