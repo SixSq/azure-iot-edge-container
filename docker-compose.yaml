@@ -9,9 +9,9 @@ services:
     volumes: 
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     configs:
-      source: service_file
-      target: '/opt/azure/'
+      - source:  service_file
+        target: '/opt/azure/'
 
 configs:
   service_file: 
-    file: './entrypointEnvs'
+    file: './entrypointEnvs'  

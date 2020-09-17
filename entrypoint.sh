@@ -33,7 +33,6 @@ systemctl restart iotedge
 
 }   
 
-# systemctl import-environment $TENANT_ID $TENANT_PASSWORD $TENANT_URL $AZURE_IOT_HUB_NAME
 
 if [ -z "$CONNECTION_STRING" ]; 
 then
