@@ -1,0 +1,19 @@
+version: '3.6'
+
+services:
+  azure-iot-edge:
+    image: 'runtime'
+    container_name: 'azure-iot-edge'
+    network_mode: 'host'
+    privileged: true
+    volumes: 
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      - '/var/run/iotedge/mgmt.sock:/var/run/iotedge/mgmt.sock'
+      - '/var/run/iotedge/workload.sock:/var/run/iotedge/workload.sock'
+    configs:
+      - source:  service_file
+        target: '/opt/azure/'
+
+configs:
+  service_file: 
+    file: './entrypointEnvs-azure'
