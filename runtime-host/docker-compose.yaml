@@ -8,6 +8,9 @@ services:
     privileged: true
     volumes: 
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/lib/systemd/system/iotedge.mgmt.socket:/lib/systemd/system/iotedge.mgmt.socket'
+      - '/lib/systemd/system/iotedge.socket:/lib/systemd/system/iotedge.socket'
       - '/var/run/iotedge/mgmt.sock:/var/run/iotedge/mgmt.sock'
       - '/var/run/iotedge/workload.sock:/var/run/iotedge/workload.sock'
     configs:
