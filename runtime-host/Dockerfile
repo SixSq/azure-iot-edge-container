@@ -24,6 +24,8 @@ RUN chmod +x /opt/azure/entrypoint.sh
 
 COPY entrypoint.service /lib/systemd/system/
 
+COPY config.yaml /etc/iotedge/
+
 RUN systemctl enable entrypoint
 
 VOLUME /var/lib/docker

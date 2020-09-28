@@ -33,6 +33,12 @@ systemctl restart iotedge
 
 }   
 
+
+chown root:docker /docker/docker.sock
+chown root:iotedge /iotedge/workload.sock
+chown root:iotedge /iotedge/mgmt.sock
+
+
 CONNECTION_STRING="HostName=NuvlaBox-Test.azure-devices.net;DeviceId=non_systemd;SharedAccessKey=1WY6R6wFz+UktsG61TGn9pmU6VUeinJWHWMbZLrqHwk="
 echo $CONNECTION_STRING
 
