@@ -123,3 +123,16 @@ Several problems occured when developing this project:
 - Azure containers are isolated (Docker in Docker)
 - No logs from IoTEdge - due to systemd start.
 
+## Azure Runtime installed on Host
+
+When the runtime is installed on the host, the needed Runtime sockets (mgmt.sock and workload.sock) are created. 
+This test was done (on the branch 'runtime-host'), to check, when the required sockets are pass to the container, if we are able to run the 
+Azure containers on the host.
+
+Due to limitations on how the iotedge runtime uses these sockets, this is not possible, as the runtime in the 
+container will change the status of those sockets in such a way, that will break the runtime on the host.
+
+There are 2 possible solutions for this problem:
+
+1- Use iotedged without systemd. This is dangerous as there is the need to create some dependencies such as 'fd://iotedge.mgmt.socket/'.
+2- Make sure all permissions mantained and inherited by the container. Also dangerous.   
