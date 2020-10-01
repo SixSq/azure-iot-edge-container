@@ -130,9 +130,10 @@ This test was done (on the branch 'runtime-host'), to check, when the required s
 Azure containers on the host.
 
 Due to limitations on how the iotedge runtime uses these sockets, this is not possible, as the runtime in the 
-container will change the status of those sockets in such a way, that will break the runtime on the host.
+container will change the status of those sockets in such a way, that it will break the runtime on the host.
 
 There are 2 possible solutions for this problem:
 
 1- Use iotedged without systemd. This is dangerous as there is the need to create some dependencies such as 'fd://iotedge.mgmt.socket/'.
-2- Make sure all permissions mantained and inherited by the container. Also dangerous.   
+2- Make sure all permissions mantained and inherited by the container. Also dangerous.
+
