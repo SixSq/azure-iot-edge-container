@@ -123,17 +123,19 @@ Several problems occured when developing this project:
 - Azure containers are isolated (Docker in Docker)
 - No logs from IoTEdge - due to systemd start.
 
-## Azure Runtime installed on Host
 
-When the runtime is installed on the host, the needed Runtime sockets (mgmt.sock and workload.sock) are created. 
-This test was done (on the branch 'runtime-host'), to check, when the required sockets are pass to the container, if we are able to run the 
-Azure containers on the host.
+## Testing with the Azure Runtime installed on Host
 
-Due to limitations on how the iotedge runtime uses these sockets, this is not possible, as the runtime in the 
-container will change the status of those sockets in such a way, that it will break the runtime on the host.
+The idea with this scenario is to fix some of the problems found in troubleshooting (like avoiding Docker in Docker), by having the `azure-iot-edge-runtime-container` re-use the `iotedge` configurations from the host. Thus it assumes a pre-requisite to be fulfilled by the user prior to the deployment of the `azure-iot-edge-runtime-container`.
 
-There are 2 possible solutions for this problem:
+When the runtime (`iotedge`) is installed on the host, the needed Runtime sockets (mgmt.sock and workload.sock) become present and can be shared with Docker containers.
 
-1- Use iotedged without systemd. This is dangerous as there is the need to create some dependencies such as 'fd://iotedge.mgmt.socket/'.
-2- Make sure all permissions mantained and inherited by the container. Also dangerous.
+However, it seems that the `iotedge` service running inside the `azure-iot-edge-runtime-container` container will somehow conflict with the host installation, failing to execute and even compromising the host setup.
+
+Two potential solutions for this problem are:
+
+1- Use iotedged without systemd. This is tricky as there is the need to create some dependencies such as 'fd://iotedge.mgmt.socket/'.
+2- Make sure all host configurations for `iotedge` are mantained within the container. This might be tricky to achieve
+
+This test was done on the branch 'runtime-host', folder `runtime-host`
 
