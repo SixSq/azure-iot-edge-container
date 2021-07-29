@@ -139,3 +139,7 @@ Two potential solutions for this problem are:
 
 This test was done on the branch 'runtime-host', folder `runtime-host`
 
+
+## Copyright
+
+Copyright &copy; 2021, SixSq SA
